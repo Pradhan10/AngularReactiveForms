@@ -1,11 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatButtonModule, MatCheckboxModule, MatIconModule} from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { CustomerComponent } from './customers/customer.component';
+import {MaterialModule} from './shared/material.module';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,9 @@ import { CustomerComponent } from './customers/customer.component';
     BrowserAnimationsModule,
     MatIconModule,
     MatButtonModule,
+    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule,
     MatCheckboxModule
   ],
   bootstrap: [AppComponent]

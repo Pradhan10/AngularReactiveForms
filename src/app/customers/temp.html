@@ -1,0 +1,387 @@
+<div class="card">
+  <div class="card-header">
+    Sign Up In Material!
+  </div>
+
+  <div class="card-body">
+    <form novalidate
+          (ngSubmit)="save()"
+          [formGroup]="customerForm">
+
+      <div class="form-group row mb-2">
+        <mat-label class="col-md-2 col-form-label"
+                   for="firstNameId">Name</mat-label>
+        <div class="col-md-8">
+          <mat-input class="form-control"
+                     id="fNameId"
+                     type="text"
+                     placeholder="First Name (required)"
+                     formControlName="firstName"
+                     [ngClass]="{'is-invalid': (customerForm.get('firstName').touched ||
+                                            customerForm.get('firstName').dirty) &&
+                                            !customerForm.get('firstName').valid }" ></mat-input>
+          <span class="invalid-feedback">
+            <span *ngIf="customerForm.get('firstName').errors?.required">
+              Please enter your first name.
+            </span>
+            <span *ngIf="customerForm.get('firstName').errors?.minlength">
+              The first name must be longer than 3 characters.
+            </span>
+          </span>
+        </div>
+      </div>
+
+      <div formGroupName="emailGroup">
+        <div class="form-group row mb-2">
+          <mat-label class="col-md-2 col-form-label"
+                     for="emailId">Email</mat-label>
+          <div class="col-md-8">
+            <mat-input class="form-control"
+                       id="eId"
+                       type="email"
+                       placeholder="Email (required)"
+                       formControlName="email"
+                       [ngClass]="{'is-invalid': emailMessage }" ></mat-input>
+            <span class="invalid-feedback">
+              {{ emailMessage }}
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group row mb-2">
+          <mat-label class="col-md-2 col-form-label"
+                     for="confirmEmailId">Confirm Email</mat-label>
+          <div class="col-md-8">
+            <mat-input class="form-control"
+                       id="cnfEmailId"
+                       type="email"
+                       placeholder="Confirm Email (required)"
+                       formControlName="confirmEmail"
+                       [ngClass]="{'is-invalid': customerForm.get('emailGroup').errors ||
+                                             ((customerForm.get('emailGroup.confirmEmail').touched ||
+                                              customerForm.get('emailGroup.confirmEmail').dirty) &&
+                                              !customerForm.get('emailGroup.confirmEmail').valid) }" ></mat-input>
+            <span class="invalid-feedback">
+              <span *ngIf="customerForm.get('emailGroup.confirmEmail').errors?.required">
+                Please confirm your email address.
+              </span>
+              <span *ngIf="customerForm.get('emailGroup').errors?.match">
+                The confirmation does not match the email address.
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row mb-2">
+        <mat-label class="col-md-2 col-form-label"
+                   for="phoneId">Phone</mat-label>
+        <div class="col-md-8">
+          <mat-input class="form-control"
+                     id="pId"
+                     type="tel"
+                     placeholder="Phone"
+                     formControlName="phone"
+                     [ngClass]="{'is-invalid': !customerForm.get('phone').valid }" ></mat-input>
+          <span class="invalid-feedback">
+            <span *ngIf="customerForm.get('phone').errors?.required">
+              Please enter your phone number.
+            </span>
+          </span>
+        </div>
+      </div>
+
+
+      <div >
+
+        <div formArrayName="addresses"
+             *ngFor="let address of addresses.controls; let i=index">
+
+          <div [formGroupName]="i">
+
+            <div class="form-group row mb-2">
+              <mat-label class="col-md-2 col-form-label"
+                         attr.for="{{'sId' + i}}">Street Address 1</mat-label>
+              <div class="col-md-8">
+                <mat-input class="form-control"
+                           id="{{'sId' + i}}"
+                           type="text"
+                           placeholder="Street address (required)"
+                           formControlName="street1"
+                           [ngClass]="{'is-invalid': (address.controls.street1.touched ||
+                                                  address.controls.street1.dirty) &&
+                                                  !address.controls.street1.valid }"></mat-input>
+                <span class="invalid-feedback">
+                  <span *ngIf="address.controls.street1.errors?.required">
+                    Please enter your street address.
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <div class="form-group row mb-2">
+              <mat-label class="col-md-2 col-form-label"
+                         attr.for="{{'s2Id' + i}}">Street Address 2</mat-label>
+              <div class="col-md-8">
+                <mat-input class="form-control"
+                           id="{{'s2Id' + i}}"
+                           type="text"
+                           placeholder="Street address (second line)"
+                           formControlName="street2">
+              </div>
+            </div>
+
+            <div class="form-group row mb-2">
+              <mat-label class="col-md-2 col-form-label"
+                         attr.for="{{'cId' + i}}">City, State, Zip Code</mat-label>
+              <div class="col-md-3">
+                <select class="form-control"
+                        id="{{'staId' + i}}"
+                        formControlName="city">
+                  <option value=""
+                          disabled
+                          selected
+                          hidden>Select a City</option>
+                  <option value="MP">Indore</option>
+                  <option value="MP">Bhopal</option>
+                  <option value="RJ">Jaipur</option>
+                  <option value="MH">Pune</option>
+                </select>
+              </div>
+
+              <div class="col-md-3">
+                <mat-input class="form-control"
+                           id="{{'ctyId' + i}}"
+                           type="text"
+                           autocomplete="true"
+                           value="{ customerForm.touched }"
+                           placeholder="State"
+                           formControlName="state">
+              </div>
+
+              <div class="col-md-2">
+                <mat-input class="form-control"
+                           id="{{'zpId' + i}}"
+                           type="number"
+                           placeholder="Zip Code"
+                           formControlName="zip">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-group row mb-2">
+        <div class="offset-md-2 col-md-4">
+          <button class="btn btn-primary mr-3"
+                  type="submit"
+                  style="width:80px"
+                  [title]="customerForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
+                  [disabled]="!customerForm.valid">
+            Save
+          </button>
+          <button class="btn btn-outline-secondary"
+                  type="button"
+                  (click)="populateTestData()">
+            Test Data
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!--<div class="card">
+  <div class="card-header">
+    Sign Up In Material!
+  </div>
+
+  <div class="card-body">
+    <form novalidate
+          (ngSubmit)="save()"
+          [formGroup]="customerForm">
+
+      <div class="form-group row mb-2">
+        <mat-label class="col-md-2 col-form-label"
+                   for="firstNameId">Name</mat-label>
+        <div class="col-md-8">
+          <mat-input class="form-control"
+                     id="fNameId"
+                     type="text"
+                     placeholder="First Name (required)"
+                     formControlName="firstName"
+                     [ngClass]="{'is-invalid': (customerForm.get('firstName').touched ||
+                                            customerForm.get('firstName').dirty) &&
+                                            !customerForm.get('firstName').valid }" ></mat-input>
+          <span class="invalid-feedback">
+            <span *ngIf="customerForm.get('firstName').errors?.required">
+              Please enter your first name.
+            </span>
+            <span *ngIf="customerForm.get('firstName').errors?.minlength">
+              The first name must be longer than 3 characters.
+            </span>
+          </span>
+        </div>
+      </div>
+
+      <div formGroupName="emailGroup">
+        <div class="form-group row mb-2">
+          <mat-label class="col-md-2 col-form-label"
+                     for="emailId">Email</mat-label>
+          <div class="col-md-8">
+            <mat-input class="form-control"
+                       id="eId"
+                       type="email"
+                       placeholder="Email (required)"
+                       formControlName="email"
+                       [ngClass]="{'is-invalid': emailMessage }" ></mat-input>
+            <span class="invalid-feedback">
+              {{ emailMessage }}
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group row mb-2">
+          <mat-label class="col-md-2 col-form-label"
+                     for="confirmEmailId">Confirm Email</mat-label>
+          <div class="col-md-8">
+            <mat-input class="form-control"
+                       id="cnfEmailId"
+                       type="email"
+                       placeholder="Confirm Email (required)"
+                       formControlName="confirmEmail"
+                       [ngClass]="{'is-invalid': customerForm.get('emailGroup').errors ||
+                                             ((customerForm.get('emailGroup.confirmEmail').touched ||
+                                              customerForm.get('emailGroup.confirmEmail').dirty) &&
+                                              !customerForm.get('emailGroup.confirmEmail').valid) }" ></mat-input>
+            <span class="invalid-feedback">
+              <span *ngIf="customerForm.get('emailGroup.confirmEmail').errors?.required">
+                Please confirm your email address.
+              </span>
+              <span *ngIf="customerForm.get('emailGroup').errors?.match">
+                The confirmation does not match the email address.
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row mb-2">
+        <mat-label class="col-md-2 col-form-label"
+                   for="phoneId">Phone</mat-label>
+        <div class="col-md-8">
+          <mat-input class="form-control"
+                     id="pId"
+                     type="tel"
+                     placeholder="Phone"
+                     formControlName="phone"
+                     [ngClass]="{'is-invalid': !customerForm.get('phone').valid }" ></mat-input>
+          <span class="invalid-feedback">
+            <span *ngIf="customerForm.get('phone').errors?.required">
+              Please enter your phone number.
+            </span>
+          </span>
+        </div>
+      </div>
+
+
+      <div >
+
+        <div formArrayName="addresses"
+             *ngFor="let address of addresses.controls; let i=index">
+
+          <div [formGroupName]="i">
+
+            <div class="form-group row mb-2">
+              <mat-label class="col-md-2 col-form-label"
+                         attr.for="{{'sId' + i}}">Street Address 1</mat-label>
+              <div class="col-md-8">
+                <mat-input class="form-control"
+                           id="{{'sId' + i}}"
+                           type="text"
+                           placeholder="Street address (required)"
+                           formControlName="street1"
+                           [ngClass]="{'is-invalid': (address.controls.street1.touched ||
+                                                  address.controls.street1.dirty) &&
+                                                  !address.controls.street1.valid }"></mat-input>
+                <span class="invalid-feedback">
+                  <span *ngIf="address.controls.street1.errors?.required">
+                    Please enter your street address.
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <div class="form-group row mb-2">
+              <mat-label class="col-md-2 col-form-label"
+                         attr.for="{{'s2Id' + i}}">Street Address 2</mat-label>
+              <div class="col-md-8">
+                <mat-input class="form-control"
+                           id="{{'s2Id' + i}}"
+                           type="text"
+                           placeholder="Street address (second line)"
+                           formControlName="street2"></mat-input>
+              </div>
+            </div>
+
+            <div class="form-group row mb-2">
+              <mat-label class="col-md-2 col-form-label"
+                         attr.for="{{'cId' + i}}">City, State, Zip Code</mat-label>
+              <div class="col-md-3">
+                <select class="form-control"
+                        id="{{'staId' + i}}"
+                        formControlName="city">
+                  <option value=""
+                          disabled
+                          selected
+                          hidden>Select a City</option>
+                  <option value="MP">Indore</option>
+                  <option value="MP">Bhopal</option>
+                  <option value="RJ">Jaipur</option>
+                  <option value="MH">Pune</option>
+                </select>
+              </div>
+
+              <div class="col-md-3">
+                <mat-input class="form-control"
+                           id="{{'ctyId' + i}}"
+                           type="text"
+                           autocomplete="true"
+                           value="{ customerForm.touched }"
+                           placeholder="State"
+                           formControlName="state"></mat-input>
+              </div>
+
+              <div class="col-md-2">
+                <mat-input class="form-control"
+                           id="{{'zpId' + i}}"
+                           type="number"
+                           placeholder="Zip Code"
+                           formControlName="zip"></mat-input>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-group row mb-2">
+        <div class="offset-md-2 col-md-4">
+          <button class="btn btn-primary mr-3"
+                  type="submit"
+                  style="width:80px"
+                  [title]="customerForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
+                  [disabled]="!customerForm.valid">
+            Save
+          </button>
+          <button class="btn btn-outline-secondary"
+                  type="button"
+                  (click)="populateTestData()">
+            Test Data
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>-->

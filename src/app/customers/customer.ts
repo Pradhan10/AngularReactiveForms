@@ -11,3 +11,4 @@ export class Customer {
     public state = '',
     public zip?: string) { }
 }
+

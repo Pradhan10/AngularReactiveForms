@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl, ValidatorFn, FormA
 import { debounceTime } from 'rxjs/operators';
 
 import { Customer } from './customer';
+import {getBlankCustomer} from './testing/test-customer';
 
 function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
@@ -34,8 +35,8 @@ function ratingRange(min: number, max: number): ValidatorFn {
   styleUrls: ['./customer.component.css']
 })
 export class CustomerComponent implements OnInit {
+  user: Customer = getBlankCustomer();
   customerForm: FormGroup;
-  customer = new Customer();
   emailMessage: string;
 
   private validationMessages = {

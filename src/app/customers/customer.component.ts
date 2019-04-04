@@ -45,6 +45,7 @@ export class CustomerComponent implements OnInit {
   };
 
   get addresses(): FormArray {
+    /*We cannot invoke this directly, as it is a getter*/
     return <FormArray>this.customerForm.get('addresses');
   }
 

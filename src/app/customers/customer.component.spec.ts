@@ -1,9 +1,12 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-
 import {CustomerComponent} from './customer.component';
-import {FormBuilder} from '@angular/forms';
+import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {NO_ERRORS_SCHEMA} from '@angular/core';
 import {getBlankCustomer} from './testing/test-customer';
+import {AbstractMockObservableService} from './testing/test-subscribe-helper';
+import createSpy = jasmine.createSpy;
+import {emailMatcher, ratingRange} from './util-functions';
+
 
 ////// Testing Vars //////
 let component: CustomerComponent;
@@ -11,9 +14,34 @@ let fixture: ComponentFixture<CustomerComponent>;
 // create new instance of FormBuilder
 const formBuilder: FormBuilder = new FormBuilder();
 
+class MockService extends AbstractMockObservableService {
+  doStuff() {
+    return this;
+  }
+}
+
+/*
+class SubscribeEmailControl {
+  public data: Data[];
+  public subscribeEmailControl(): Observable<AbstractControl> {
+    this.data = results;
+    return Observable.of(this.data);
+  }
+}
+
+class MockMyServiceWithError {
+  public data: Data[];
+  public getData(): Observable<Data[]> {
+    this.data = results;
+    return new ErrorObservable(this.data);
+  }
+}
+*/
+let mockService;
 describe('CustomerComponent', () => {
 
   beforeEach(async(() => {
+    mockService = new MockService();
     TestBed.configureTestingModule({
       declarations: [CustomerComponent],
       providers: [
@@ -21,12 +49,12 @@ describe('CustomerComponent', () => {
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
-      .compileComponents()
-      .then(() => {
-        fixture = TestBed.createComponent(CustomerComponent);
-        component = fixture.componentInstance;
-        component.ngOnInit();
-      });
+    .compileComponents()
+    .then(() => {
+      fixture = TestBed.createComponent(CustomerComponent);
+      component = fixture.componentInstance;
+      component.ngOnInit();
+    });
   }));
 
   // create reusable function for a dry spec.
@@ -49,7 +77,8 @@ describe('CustomerComponent', () => {
 
   it('should have populateTestData() method', () => {
     const compExp = new CustomerComponent(formBuilder);
-    expect(compExp.populateTestData()).toHaveBeenCalled();
+    compExp.ngOnInit();
+    expect(compExp.populateTestData()).toBeUndefined();
   });
 
 
@@ -67,20 +96,6 @@ describe('CustomerComponent', () => {
     expect(component.save()).toBeUndefined();
   });
 
-  it('should have setMessage() method', () => {
-    // Arrange
-    const mockAbstractControl = jasmine.createSpyObj('AbstractControl', ['']);
-    /*Test else part*/
-    expect(component.setMessage(mockAbstractControl)).toBeUndefined();
-    const spyPropTouched = spyOnProperty(mockAbstractControl, 'touched').and.returnValue(true);
-    const spyPropDirty = spyOnProperty(mockAbstractControl, 'dirty').and.returnValue(true);
-    const spyPropErrors = spyOnProperty(mockAbstractControl, 'errors').and.returnValue(true);
-    // Act
-    // Assert
-    /*Test if part*/
-    expect(spyPropErrors).toBeUndefined();
-  });
-
   it('should have setNotification() method', () => {
     // Arrange
     // Act
@@ -90,6 +105,30 @@ describe('CustomerComponent', () => {
     /*Testing else part*/
     expect(component.setNotification('random text')).toBeUndefined();
 
+  });
+
+  it('should have subscribeEmailControl() method',  () => {
+    // Arrange
+    // Act
+    // Assert
+    expect(component.subscribeEmailControl()).toBeUndefined();
+  });
+
+  it('should have subscribeCustomerForm() method',  () => {
+    // Arrange
+    // Act
+    // Assert
+    expect(component.subscribeCustomerForm()).toBeUndefined();
+  });
+
+  it('should have setMessage() method', () => {
+    // Arrange
+    const emailControl = component.customerForm.get('emailGroup.email');
+    const allCtrls = component.customerForm.controls;
+    const check = allCtrls.hasOwnProperty('firstName');
+    const buil = new FormControl();
+    /*    component.customerForm*/
+    expect(component.setMessage(buil)).toBeUndefined();
   });
 
 

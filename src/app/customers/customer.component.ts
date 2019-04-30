@@ -1,33 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl, ValidatorFn, FormArray } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {emailMatcher, ratingRange} from './util-functions';
+import {debounceTime} from 'rxjs/operators';
 
-import { debounceTime } from 'rxjs/operators';
-
-import { Customer } from './customer';
+import {Customer} from './customer';
 import {getBlankCustomer} from './testing/test-customer';
-
-function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
-  const emailControl = c.get('email');
-  const confirmControl = c.get('confirmEmail');
-
-  if (emailControl.pristine || confirmControl.pristine) {
-    return null;
-  }
-
-  if (emailControl.value === confirmControl.value) {
-    return null;
-  }
-  return { 'match': true };
-}
-
-function ratingRange(min: number, max: number): ValidatorFn {
-  return (c: AbstractControl): { [key: string]: boolean } | null => {
-    if (c.value !== null && (isNaN(c.value) || c.value < min || c.value > max)) {
-      return { 'range': true };
-    }
-    return null;
-  };
-}
+import {subscribeTo} from 'rxjs/internal-compatibility';
 
 @Component({
   selector: 'app-customer',
@@ -65,16 +43,20 @@ export class CustomerComponent implements OnInit {
       sendCatalog: true,
       addresses: this.fb.array([this.buildAddress()])
     });
-
-    this.customerForm.get('notification').valueChanges.subscribe(
-      value => this.setNotification(value)
-    );
-
+    this.subscribeCustomerForm();
+    this.subscribeEmailControl();
+  }
+  subscribeEmailControl(): void {
     const emailControl = this.customerForm.get('emailGroup.email');
     emailControl.valueChanges.pipe(
       debounceTime(1000)
     ).subscribe(
       value => this.setMessage(emailControl)
+    );
+  }
+  subscribeCustomerForm(): void {
+    this.customerForm.get('notification').valueChanges.subscribe(
+      value => this.setNotification(value)
     );
   }
 
